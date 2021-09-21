@@ -3,13 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "dev": "concurrently \"vue-cli-service serve\" \"cd ../server && node main.js\"",
+    "serve": "concurrently \"npm run watch\" \"npm run client\"",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
     "axios": "^0.21.4",
     "bootstrap": "^5.1.1",
+    "concurrently": "^6.2.1",
     "core-js": "^3.6.5",
     "vue": "^2.6.11",
     "vue-i18n": "^8.25.1"
