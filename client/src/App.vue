@@ -3,7 +3,7 @@
     <div class="row mb-3">
       <div class="col">
         <select v-model="from" class="form-select">
-          <option :value="null">Pick</option>
+          <option :value="null">{{$t('select')}}</option>
           <option value="USD">USD</option>
           <option value="EUR">EUR</option>
           <option value="GBP">GBP</option>
@@ -13,7 +13,7 @@
       </div>
       <div class="col">
         <select v-model="to" class="form-select">
-          <option :value="null">Pick</option>
+          <option :value="null">{{$t('select')}}</option>
           <option value="USD">USD</option>
           <option value="EUR">EUR</option>
           <option value="GBP">GBP</option>
@@ -29,12 +29,12 @@
     <div class="row">
       <div class="col">
         <button class="btn btn-warning w-100" @click="reset">
-          Reset
+          {{$t('reset')}}
         </button>
       </div>
       <div class="col">
         <button class="btn btn-primary w-100" :disabled="isLoading || !isValid" @click="convert">
-          Convert
+          {{$t('convert')}}
           <span v-if="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
         </button>
       </div>
@@ -42,10 +42,10 @@
 
     <div class="row mt-3">
       <div>
-        Conversion Rate: {{conversionRate}}
+        {{$t('conversionRate')}}: {{conversionRate}}
       </div>
       <div>
-        Expected Amount: {{result}}
+        {{$t('expectedAmount')}}: {{result}}
       </div>
     </div>
   </div>
