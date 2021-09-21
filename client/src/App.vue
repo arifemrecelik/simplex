@@ -1,6 +1,6 @@
 <template>
   <div id="app" class="container-xxl">
-    <div class="row">
+    <div class="row mb-3">
       <div class="col">
         <select v-model="from" class="form-select">
           <option :value="null">Pick</option>
@@ -27,14 +27,26 @@
     </div>
 
     <div class="row">
-      <button class="btn btn-primary" :disabled="isLoading" @click="convert">
-        TEST
-        <span v-if="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-      </button>
+      <div class="col">
+        <button class="btn btn-warning w-100" @click="reset">
+          Reset
+        </button>
+      </div>
+      <div class="col">
+        <button class="btn btn-primary w-100" :disabled="isLoading || !isValid" @click="convert">
+          Convert
+          <span v-if="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        </button>
+      </div>
     </div>
 
-    <div class="row">
-      Result: {{result}}
+    <div class="row mt-3">
+      <div>
+        Conversion Rate: {{conversionRate}}
+      </div>
+      <div>
+        Expected Amount: {{result}}
+      </div>
     </div>
   </div>
 </template>
@@ -46,25 +58,53 @@ export default {
   name: 'App',
   data() {
     return {
+      storage: [],
       isLoading: false,
       from: null,
       to: null,
       amount: null,
-
       result: null,
+      conversionRate: null,
     };
   },
+  computed: {
+    isValid() {
+      return this.to && this.from && this.amount;
+    },
+  },
   methods: {
+    reset() {
+      this.from = null;
+      this.to = null;
+      this.amount = null;
+      this.conversionRate = null;
+      this.result = null;
+    },
     async convert() {
-      try {
-        this.isLoading = true;
-        const result = await currencyService.convert(this.from, this.to, this.amount);
-        this.result = result.quoteAmount;
-      } catch (error) {
-        console.log('Error');
-        console.log(error);
-      } finally {
-        this.isLoading = false;
+      const foundItem = this.storage.find((item) => item.from === this.from && item.to === this.to);
+
+      if (foundItem) {
+        this.conversionRate = foundItem.exchangeRate;
+        this.result = (this.amount * foundItem.exchangeRate).toFixed(2);
+      } else {
+        try {
+          this.isLoading = true;
+          const result = await currencyService.convert(this.from, this.to, this.amount);
+          const { exchangeRate, quoteAmount } = result;
+          this.conversionRate = exchangeRate;
+          this.result = quoteAmount;
+
+          this.storage.push({
+            from: this.from,
+            to: this.to,
+            exchangeRate: result.exchangeRate,
+          });
+        } catch (error) {
+          console.log('Error');
+          console.log(error);
+        } finally {
+          this.isLoading = false;
+        }
       }
     },
   },

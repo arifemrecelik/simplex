@@ -11,22 +11,13 @@ app.use(morgan('combined'))
 app.use(bodyParser.json())
 app.use(cors())
 
-app.get('/status', async(req, res) => {
-  // app.get('https://api.exchangerate-api.com/v4/latest/USD', (req, res) => {
-
-  axios.get('https://api.exchangerate-api.com/v4/latest/USD').then(response => {
-    console.log('Result')
-    console.log(response)
-    
-    res.json(response.data)
-  })
-})
+const exchangeRateApiKey = 'd2594171f5fb6ccba6116a4d';
 
 app.get('/convert', async(req, res) => {
   console.log('REQ')
   console.log(req)
   const {baseCurrency, quoteCurrency, baseAmount} = req.query;
-  axios.get(`https://v6.exchangerate-api.com/v6/d2594171f5fb6ccba6116a4d/pair/${baseCurrency}/${quoteCurrency}/${baseAmount}`).then(response => {
+  axios.get(`https://v6.exchangerate-api.com/v6/${exchangeRateApiKey}/pair/${baseCurrency}/${quoteCurrency}/${baseAmount}`).then(response => {
     console.log('Convert Response')
     console.log(typeof response.data)
     console.log(response.data)
